@@ -1,4 +1,7 @@
+/*!
+    @import /amethyst_window/src/config.rs#DisplayConfig
+    DisplayConfig
+*/
 (
-  title: "test-amethyst",
-  dimensions: Some((500, 500)),
+  title: "test-amethyst"
 )
