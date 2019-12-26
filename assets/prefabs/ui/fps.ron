@@ -1,0 +1,28 @@
+#![enable(implicit_some)]
+Container(
+  transform: (
+    anchor: Middle,
+    stretch: XY( x_margin: 0., y_margin: 0., keep_aspect_ratio: false),
+    width: 20.,
+    height: 20.,
+  ),
+  children: [
+    Label(
+      transform: (
+        x: 102.,
+        y: -11,
+        width: 200.,
+        height: 18.,
+        anchor: TopLeft,
+        transparent: true,
+      ),
+      text: (
+        align: MiddleLeft,
+        text: "N/A",
+        font: File("font/square.ttf", ("TTF", ())),
+        font_size: 18.,
+        color: (0.498, 0.254, 0.937, 1.0),
+      )
+    )
+  ],
+)

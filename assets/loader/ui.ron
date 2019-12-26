@@ -1,0 +1,36 @@
+#![enable(implicit_some)]
+Container(
+  transform: (
+    anchor: Middle,
+    stretch: XY( x_margin: 50., y_margin: 50., keep_aspect_ratio: false),
+    width: 20.,
+    height: 20.,
+  ),
+  children: [
+    Image(
+      transform: (
+        y: 100,
+        width: 128.,
+        height: 128.,
+        anchor: Middle,
+        mouse_reactive: true,
+      ),
+      image: Texture(File("texture/logo_transparent.png", ("IMAGE", ()))),
+    ),
+    Label(
+      transform: (
+        width: 200.,
+        height: 30.,
+        anchor: Middle,
+        transparent: true,
+      ),
+      text: (
+        align: Middle,
+        text: "Loading...",
+        font: File("font/square.ttf", ("TTF", ())),
+        font_size: 30.,
+        color: (0.498, 0.254, 0.937, 1.0),
+      )
+    ),
+  ],
+)
