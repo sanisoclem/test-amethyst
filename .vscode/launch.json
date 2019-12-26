@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'test-amethyst'",
+      "cargo": {
+        "args": [
+          "build",
+          "--bin=test-amethyst",
+          "--package=test-amethyst"
+        ],
+        "filter": {
+          "name": "test-amethyst",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'test-amethyst'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--bin=test-amethyst",
+          "--package=test-amethyst"
+        ],
+        "filter": {
+          "name": "test-amethyst",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
