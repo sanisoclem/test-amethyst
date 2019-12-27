@@ -20,6 +20,7 @@ use amethyst::{
 };
 
 mod components;
+mod resources;
 mod states;
 mod systems;
 mod utils;
@@ -34,11 +35,11 @@ fn main() -> amethyst::Result<()> {
     let display_config_path = config_dir.join("display.ron");
 
     let game_data = GameDataBuilder::default()
-        .with(
-            PrefabLoaderSystem::<components::MyScenePrefab>::default(),
-            "",
-            &[],
-        )
+        // .with(
+        //     PrefabLoaderSystem::<components::MyScenePrefab>::default(),
+        //     "",
+        //     &[],
+        // )
         .with_bundle(TransformBundle::new())?
         .with_bundle(UiBundle::<StringBindings>::new())?
         .with(Processor::<Source>::new(), "source_processor", &[])
@@ -47,7 +48,6 @@ fn main() -> amethyst::Result<()> {
             "ui_event_handler",
             &[],
         )
-        .with(systems::rotator::RotatorSystem, "rotator_system", &[])
         .with_bundle(FpsCounterBundle::default())?
         .with_bundle(InputBundle::<StringBindings>::new())?
         .with_bundle(

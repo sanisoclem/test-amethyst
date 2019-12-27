@@ -1,0 +1,19 @@
+#![enable(implicit_some)]
+Prefab (
+  entities: [
+    (
+      data: (
+        name: (
+          name: "critter_hero"
+        ),
+        graphics: (
+          mesh: Shape((shape: Torus(1, 0.5 ,10,30))),
+          material: (
+            albedo: Generate(Srgba(0.2, 0.2, 1.0, 1.0)),
+          ),
+        ),
+        transform: (),
+      ),
+    )
+  ],
+)

@@ -1,4 +1,7 @@
-use crate::{components::MyScenePrefab, utils::hierarchy_util};
+use crate::{
+  resources::prefabs::{PrefabRegistry, UiPrefabRegistry},
+  utils::hierarchy_util,
+};
 use amethyst::{
   assets::{PrefabLoader, PrefabLoaderSystem, Processor, ProgressCounter, RonFormat},
   audio::{output::init_output, Source},
@@ -22,7 +25,15 @@ impl Default for MenuState {
 }
 
 impl SimpleState for MenuState {
-  fn on_start(&mut self, mut data: StateData<GameData>) {}
+  fn on_start(&mut self, data: StateData<GameData>) {
+    let menu_prefab = data
+      .world
+      .read_resource::<UiPrefabRegistry>()
+      .find(data.world, "main_menu"); // todo: move ids to config file
+    if let Some(menu_prefab) = menu_prefab {
+      self.ui_root = Some(data.world.create_entity().with(menu_prefab).build());
+    }
+  }
 
   fn on_stop(&mut self, data: StateData<GameData>) {
     // delete the ui and scene

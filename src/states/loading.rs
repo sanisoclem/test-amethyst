@@ -1,17 +1,17 @@
-use crate::{components::MyScenePrefab, states::menu::MenuState, utils::hierarchy_util};
-use amethyst::{
-  assets::{PrefabLoader, PrefabLoaderSystem, Processor, ProgressCounter, RonFormat},
-  audio::{output::init_output, Source},
-  ecs::Entity,
-  prelude::*,
-  ui::{RenderUi, UiBundle, UiCreator, UiEvent, UiFinder, UiText},
+use crate::{
+  resources::prefabs::{initialize_prefabs, update_prefab_names},
+  states::menu::MenuState,
+  utils::hierarchy_util,
 };
+use amethyst::{
+  assets::ProgressCounter, audio::output::init_output, ecs::Entity, prelude::*, ui::UiCreator,
+};
+use log::info;
 
 pub struct LoadingState {
   scene_root: Option<Entity>,
   ui_root: Option<Entity>,
   loading_progress: Option<ProgressCounter>,
-  counter: i32,
 }
 
 impl Default for LoadingState {
@@ -20,20 +20,13 @@ impl Default for LoadingState {
       scene_root: None,
       loading_progress: None,
       ui_root: None,
-      counter: 0,
     }
   }
 }
 
 impl SimpleState for LoadingState {
-  fn on_start(&mut self, mut data: StateData<GameData>) {
-    let StateData { world, .. } = data;
-
-    // create loader scene
-    let handle = world.exec(|loader: PrefabLoader<'_, MyScenePrefab>| {
-      loader.load("loader/scene.ron", RonFormat, ())
-    });
-    self.scene_root = Some(world.create_entity().with(handle).build());
+  fn on_start(&mut self, data: StateData<GameData>) {
+    let StateData { mut world, .. } = data;
 
     // create UI
     self.ui_root =
@@ -41,6 +34,8 @@ impl SimpleState for LoadingState {
 
     // start loading all the things
     init_output(&mut world.res);
+
+    self.loading_progress = Some(initialize_prefabs(&mut world));
   }
 
   fn on_stop(&mut self, data: StateData<GameData>) {
@@ -59,9 +54,17 @@ impl SimpleState for LoadingState {
   fn update(&mut self, data: &mut StateData<GameData>) -> SimpleTrans {
     data.data.update(&data.world);
 
-    self.counter += 1;
-    if self.counter >= 500 {
-      return Trans::Switch(Box::new(MenuState::default()));
+    if let Some(counter) = &self.loading_progress {
+      if counter.is_complete() {
+        info!("counter complete!");
+        self.loading_progress = None;
+        update_prefab_names(&mut data.world);
+        return Trans::Switch(Box::new(MenuState::default()));
+      } else if counter.num_failed() > 0 {
+        info!("some assets failed loading {}", counter.num_failed());
+      } else if counter.num_loading() > 0 {
+        info!("still loading {} assets", counter.num_loading());
+      }
     }
     Trans::None
   }
