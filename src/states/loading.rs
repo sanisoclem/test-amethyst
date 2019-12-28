@@ -1,6 +1,6 @@
 use crate::{
   resources::prefabs::{initialize_prefabs, update_prefab_names},
-  states::{game::MainGameState},
+  states::game::MainGameState,
   utils::hierarchy_util,
 };
 use amethyst::{
@@ -35,7 +35,7 @@ impl SimpleState for LoadingState {
       Some(world.exec(|mut creator: UiCreator<'_>| creator.create("loader/ui.ron", ())));
 
     // start loading all the things
-    init_output(&mut world.res);
+    init_output(&mut world);
 
     self.loading_progress = Some(initialize_prefabs(&mut world));
   }

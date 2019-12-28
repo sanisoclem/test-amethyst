@@ -1,5 +1,5 @@
-use crate::{resources::prefabs::UiPrefabRegistry, utils::hierarchy_util};
-use amethyst::{ecs::Entity, prelude::*};
+use crate::{resources::prefabs::PrefabRegistry, utils::hierarchy_util};
+use amethyst::{ecs::Entity, prelude::*, ui::UiPrefab};
 
 pub struct MenuState {
   scene_root: Option<Entity>,
@@ -19,11 +19,12 @@ impl SimpleState for MenuState {
   fn on_start(&mut self, data: StateData<GameData>) {
     let menu_prefab = data
       .world
-      .read_resource::<UiPrefabRegistry>()
-      .find(data.world, "main_menu"); // todo: move ids to config file
-    if let Some(menu_prefab) = menu_prefab {
-      self.ui_root = Some(data.world.create_entity().with(menu_prefab).build());
-    }
+      .read_resource::<PrefabRegistry<UiPrefab>>()
+      .get_prefab("main_menu") // todo: move ids to config file
+      .expect("main menu prefab not found")
+      .clone();
+
+    self.ui_root = Some(data.world.create_entity().with(menu_prefab.clone()).build());
   }
 
   fn on_stop(&mut self, data: StateData<GameData>) {

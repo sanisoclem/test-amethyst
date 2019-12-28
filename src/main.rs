@@ -1,5 +1,5 @@
 use amethyst::{
-    assets::{PrefabLoaderSystem, Processor},
+    assets::{PrefabLoaderSystemDesc, Processor},
     audio::Source,
     controls::FlyControlBundle,
     core::{frame_limiter::FrameRateLimitStrategy, transform::TransformBundle},
@@ -13,6 +13,7 @@ use amethyst::{
     ui::{RenderUi, UiBundle},
     utils::{application_root_dir, fps_counter::FpsCounterBundle},
 };
+use components::{critter::CritterPrefabData, level::LevelPrefabData};
 
 mod bindings;
 mod components;
@@ -32,13 +33,13 @@ fn main() -> amethyst::Result<()> {
     let input_bindings_path = config_dir.join("input.ron");
 
     let game_data = GameDataBuilder::default()
-        .with(
-            PrefabLoaderSystem::<components::critter::CritterPrefabData>::default(),
+        .with_system_desc(
+            PrefabLoaderSystemDesc::<CritterPrefabData>::default(),
             "",
             &[],
         )
-        .with(
-            PrefabLoaderSystem::<components::level::LevelPrefabData>::default(),
+        .with_system_desc(
+            PrefabLoaderSystemDesc::<LevelPrefabData>::default(),
             "",
             &[],
         )
@@ -59,6 +60,7 @@ fn main() -> amethyst::Result<()> {
             "ui_event_handler",
             &[],
         )
+        .with(systems::debug::DebugSystem::default(), "debug_system", &[])
         .with_bundle(FpsCounterBundle::default())?
         .with_bundle(
             InputBundle::<bindings::GameBindings>::new()
