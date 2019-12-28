@@ -6,7 +6,7 @@ use amethyst::{
     input::InputBundle,
     prelude::*,
     renderer::{
-        plugins::{RenderShaded3D, RenderToWindow},
+        plugins::{RenderShaded3D, RenderSkybox, RenderToWindow},
         types::DefaultBackend,
         RenderingBundle,
     },
@@ -71,6 +71,7 @@ fn main() -> amethyst::Result<()> {
                         .with_clear([0.0, 0.0, 0.0, 1.0]),
                 )
                 .with_plugin(RenderShaded3D::default())
+                .with_plugin(RenderSkybox::default())
                 .with_plugin(RenderUi::default()),
         )?;
 
