@@ -3,6 +3,7 @@ use amethyst::{
     core::{Named, Transform},
     derive::PrefabData,
     ecs::Entity,
+    renderer::rendy::mesh::{Normal, Position, TexCoord},
     renderer::{formats::GraphicsPrefab, rendy::mesh::MeshBuilder, shape::FromShape},
     Error,
 };
@@ -11,7 +12,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Deserialize, Debug, Default, Serialize, PrefabData)]
 #[serde(default)]
 #[serde(deny_unknown_fields)]
-pub struct CritterPrefabData<V>
+pub struct CritterPrefabData<V = (Vec<Position>, Vec<Normal>, Vec<TexCoord>)>
 where
     V: FromShape + Into<MeshBuilder<'static>>,
 {

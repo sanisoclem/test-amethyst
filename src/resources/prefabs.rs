@@ -1,11 +1,13 @@
 use std::collections::HashMap;
 use std::fs::read_dir;
 
-use crate::components::{critter::CritterPrefabData, level::LevelPrefabData, NamedPrefab};
+use crate::{
+    components::{critter::CritterPrefabData, level::LevelPrefabData, NamedPrefab},
+    utils::assets::enumerate_assets,
+};
 use amethyst::{
     assets::{AssetStorage, Handle, Prefab, PrefabLoader, ProgressCounter, RonFormat},
     ecs::World,
-    renderer::rendy::mesh::{Normal, Position, TexCoord},
     ui::{UiLoader, UiPrefab},
     utils::application_root_dir,
 };
@@ -68,58 +70,33 @@ where
     }
 }
 
-fn make_name(subdirectory: &str, entry: &std::fs::DirEntry) -> Option<String> {
-    let path_buffer = entry.path();
-    let filename = path_buffer.file_name()?;
-    Some(format!("{}{}", subdirectory, filename.to_str()?))
-}
-
 pub fn initialize_prefabs(world: &mut World) -> ProgressCounter {
     let mut progress_counter = ProgressCounter::new();
 
     // load ui prefabs
     {
         let mut ui_prefab_registry = UiPrefabRegistry::default();
-        let prefab_dir_path = application_root_dir()
-            .expect("to have an app root dir")
-            .join("assets/prefabs/ui");
-        let prefab_iter = read_dir(prefab_dir_path).expect("to be able enumerate UI prefabs");
-        ui_prefab_registry.prefabs = prefab_iter
-            .map(|prefab_dir_entry| {
-                world.exec(|loader: UiLoader<'_>| {
-                    loader.load(
-                        make_name(
-                            "prefabs/ui/",
-                            &prefab_dir_entry.expect("to read prefab path"),
-                        )
-                        .expect("to be able to name UI prefabs"),
-                        &mut progress_counter,
-                    )
-                })
+        ui_prefab_registry.prefabs = enumerate_assets("prefabs/ui")
+            .expect("to be able enumerate UI prefabs")
+            .map(|(_, asset_path)| {
+                world.exec(|loader: UiLoader<'_>| loader.load(asset_path, &mut progress_counter))
             })
             .collect::<Vec<Handle<UiPrefab>>>();
         world.add_resource(ui_prefab_registry);
     }
 
     // load critter prefabs
-    my_load_prefab::<CritterPrefabData<(Vec<Position>, Vec<Normal>, Vec<TexCoord>)>>(
-        "critters",
-        world,
-        &mut progress_counter,
-    );
+    my_load_prefab::<CritterPrefabData>("prefabs/critters", world, &mut progress_counter);
 
     // load level prefabs
-    my_load_prefab::<LevelPrefabData<(Vec<Position>, Vec<Normal>, Vec<TexCoord>)>>(
-        "levels",
-        world,
-        &mut progress_counter,
-    );
+    my_load_prefab::<LevelPrefabData>("prefabs/levels", world, &mut progress_counter);
 
     progress_counter
 }
 
 pub fn update_prefab_names(world: &mut World) {
-    my_update_prefab_names::<CritterPrefabData<(Vec<Position>, Vec<Normal>, Vec<TexCoord>)>>(world);
+    my_update_prefab_names::<CritterPrefabData>(world);
+    my_update_prefab_names::<LevelPrefabData>(world);
 }
 
 fn my_load_prefab<T>(path: &str, world: &mut World, pc: &mut ProgressCounter)
@@ -127,18 +104,16 @@ where
     T: for<'a> Deserialize<'a> + Send + Sync + Default + 'static,
 {
     let prefab_iter = {
-        let prefab_dir_path = application_root_dir()
-            .expect("to have an app root dir")
-            .join("assets/prefabs")
-            .join(path);
-        let prefab_iter = read_dir(prefab_dir_path).expect("to enumerate prefab files");
-        prefab_iter.map(|prefab_dir_entry| {
-            world.exec(|loader: PrefabLoader<'_, T>| {
-                let name = make_name(path, &prefab_dir_entry.expect("to read prefab file path"))
-                    .expect("to generate prefab name");
-                (name.to_owned(), loader.load(name, RonFormat, &mut *pc))
+        enumerate_assets(path)
+            .expect("assets can be enumerated")
+            .map(|(_, asset_path)| {
+                world.exec(|loader: PrefabLoader<'_, T>| {
+                    (
+                        asset_path.to_owned(),
+                        loader.load(asset_path, RonFormat, &mut *pc),
+                    )
+                })
             })
-        })
     };
 
     let mut registry = PrefabRegistry::<T>::default();
@@ -157,17 +132,16 @@ where
         let prefabs = creature_prefabs.get_prefabs();
         let mut prefab_resource = world.write_resource::<AssetStorage<Prefab<T>>>();
         let mut new_prefabs = HashMap::new();
-        let g: Option<i32>;
 
-        for (_key, handle) in prefabs.iter() {
-            if let Some(name) = prefab_resource
+        for (_, handle) in prefabs.iter() {
+            let name = prefab_resource
                 .get_mut(handle)
                 .and_then(|prefab| prefab.entity(0))
                 .and_then(|entity| entity.data())
                 .and_then(|data| data.name())
-            {
-                new_prefabs.insert(name.to_owned(), handle.clone());
-            }
+                .expect("Failed to retrieve prefab name");
+            log::info!("Found named prefab {}", name);
+            new_prefabs.insert(name.to_owned(), handle.clone());
         }
         new_prefabs
     };

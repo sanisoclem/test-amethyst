@@ -35,11 +35,16 @@ fn main() -> amethyst::Result<()> {
     let display_config_path = config_dir.join("display.ron");
 
     let game_data = GameDataBuilder::default()
-        // .with(
-        //     PrefabLoaderSystem::<components::MyScenePrefab>::default(),
-        //     "",
-        //     &[],
-        // )
+        .with(
+            PrefabLoaderSystem::<components::critter::CritterPrefabData>::default(),
+            "",
+            &[],
+        )
+        .with(
+            PrefabLoaderSystem::<components::level::LevelPrefabData>::default(),
+            "",
+            &[],
+        )
         .with_bundle(TransformBundle::new())?
         .with_bundle(UiBundle::<StringBindings>::new())?
         .with(Processor::<Source>::new(), "source_processor", &[])

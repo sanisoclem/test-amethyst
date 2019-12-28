@@ -1,6 +1,6 @@
 use crate::{
   resources::prefabs::{initialize_prefabs, update_prefab_names},
-  states::menu::MenuState,
+  states::{game::MainGameState, menu::MenuState},
   utils::hierarchy_util,
 };
 use amethyst::{
@@ -11,6 +11,7 @@ use log::info;
 pub struct LoadingState {
   scene_root: Option<Entity>,
   ui_root: Option<Entity>,
+  counter: i32,
   loading_progress: Option<ProgressCounter>,
 }
 
@@ -20,6 +21,7 @@ impl Default for LoadingState {
       scene_root: None,
       loading_progress: None,
       ui_root: None,
+      counter: 0,
     }
   }
 }
@@ -53,17 +55,18 @@ impl SimpleState for LoadingState {
 
   fn update(&mut self, data: &mut StateData<GameData>) -> SimpleTrans {
     data.data.update(&data.world);
+    self.counter += 1;
 
     if let Some(counter) = &self.loading_progress {
-      if counter.is_complete() {
+      if counter.is_complete() && self.counter >= 100 {
         info!("counter complete!");
         self.loading_progress = None;
         update_prefab_names(&mut data.world);
-        return Trans::Switch(Box::new(MenuState::default()));
+        return Trans::Switch(Box::new(MainGameState::default()));
       } else if counter.num_failed() > 0 {
-        info!("some assets failed loading {}", counter.num_failed());
+        //info!("some assets failed loading {}", counter.num_failed());
       } else if counter.num_loading() > 0 {
-        info!("still loading {} assets", counter.num_loading());
+        //info!("still loading {} assets", counter.num_loading());
       }
     }
     Trans::None

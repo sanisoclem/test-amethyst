@@ -3,6 +3,7 @@ use amethyst::{
     core::{Named, Transform},
     derive::PrefabData,
     ecs::Entity,
+    renderer::rendy::mesh::{Normal, Position, TexCoord},
     renderer::{
         camera::CameraPrefab, formats::GraphicsPrefab, light::LightPrefab,
         rendy::mesh::MeshBuilder, shape::FromShape,
@@ -14,7 +15,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Deserialize, Debug, Default, Serialize, PrefabData)]
 #[serde(default)]
 #[serde(deny_unknown_fields)]
-pub struct LevelPrefabData<V>
+pub struct LevelPrefabData<V = (Vec<Position>, Vec<Normal>, Vec<TexCoord>)>
 where
     V: FromShape + Into<MeshBuilder<'static>>,
 {
