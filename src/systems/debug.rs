@@ -30,9 +30,9 @@ impl<'a> System<'a> for DebugSystem {
         }
         if let Some(fps_entity) = self.fps_display {
             if let Some(fps_display) = ui_text.get_mut(fps_entity) {
-                if time.frame_number() % 20 == 0 {
+                if time.frame_number() % 100 == 0 {
                     let fps = fps_counter.sampled_fps();
-                    fps_display.text = format!("{:.*} FPS", 2, fps);
+                    fps_display.text = format!("{:.*} FPS", 0, fps);
                 }
             }
         }

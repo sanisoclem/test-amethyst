@@ -2,7 +2,7 @@ use amethyst::{
     assets::{PrefabLoaderSystemDesc, Processor},
     audio::Source,
     controls::FlyControlBundle,
-    core::{frame_limiter::FrameRateLimitStrategy, transform::TransformBundle},
+    core::{transform::TransformBundle},
     input::InputBundle,
     prelude::*,
     renderer::{
@@ -78,7 +78,6 @@ fn main() -> amethyst::Result<()> {
         )?;
 
     let mut game = Application::build(assets_dir, states::loading::LoadingState::default())?
-        .with_frame_limit(FrameRateLimitStrategy::Unlimited, 9999)
         .build(game_data)?;
 
     game.run();
