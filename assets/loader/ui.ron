@@ -9,7 +9,7 @@ Container(
   children: [
     Image(
       transform: (
-        y: 100,
+        y: 64,
         width: 128.,
         height: 128.,
         anchor: Middle,
@@ -19,8 +19,9 @@ Container(
     ),
     Label(
       transform: (
+        y: -64,
         width: 200.,
-        height: 30.,
+        height: 50.,
         anchor: Middle,
         transparent: true,
       ),
