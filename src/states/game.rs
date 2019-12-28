@@ -2,26 +2,26 @@ use crate::{
   components::level::LevelPrefabData, resources::prefabs::PrefabRegistry, utils::hierarchy_util,
 };
 use amethyst::{
-  assets::{PrefabLoader, PrefabLoaderSystem, Processor, ProgressCounter, RonFormat},
-  audio::{output::init_output, Source},
+  controls::{ HideCursor},
   ecs::Entity,
+  input::{is_key_down, is_mouse_button_down},
   prelude::*,
-  ui::{RenderUi, UiBundle, UiCreator, UiEvent, UiFinder, UiText},
+  winit::{MouseButton, VirtualKeyCode},
 };
 
 pub struct MainGameState {
-  level: Option<Entity>,
+  scene: Option<Entity>,
 }
 
 impl Default for MainGameState {
   fn default() -> Self {
-    Self { level: None }
+    Self { scene: None }
   }
 }
 
 impl SimpleState for MainGameState {
   fn on_start(&mut self, data: StateData<GameData>) {
-    let level = {
+    let scene_handle = {
       let registry = data
         .world
         .read_resource::<PrefabRegistry<LevelPrefabData>>();
@@ -31,6 +31,33 @@ impl SimpleState for MainGameState {
         .clone()
     };
 
-    self.level = Some(data.world.create_entity().with(level).build());
+    self.scene = Some(data.world.create_entity().with(scene_handle).build());
+  }
+
+  fn on_stop(&mut self, data: StateData<GameData>) {
+    // delete the ui and scene
+    if let Some(root) = self.scene {
+      hierarchy_util::delete_hierarchy(root, data.world).expect("failed to delete scene");
+    }
+
+    self.scene = None;
+  }
+
+  fn handle_event(
+    &mut self,
+    data: StateData<'_, GameData<'_, '_>>,
+    event: StateEvent,
+  ) -> SimpleTrans {
+    let StateData { world, .. } = data;
+    if let StateEvent::Window(event) = &event {
+      if is_key_down(&event, VirtualKeyCode::Escape) {
+        let mut hide_cursor = world.write_resource::<HideCursor>();
+        hide_cursor.hide = false;
+      } else if is_mouse_button_down(&event, MouseButton::Left) {
+        let mut hide_cursor = world.write_resource::<HideCursor>();
+        hide_cursor.hide = true;
+      }
+    }
+    Trans::None
   }
 }

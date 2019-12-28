@@ -12,8 +12,6 @@ pub fn enumerate_assets(
   let path = application_root_dir()?.join(ASSET_PATH).join(sub_path);
   let base_path = PathBuf::from(sub_path);
 
-  log::info!("Enumerating assets for {}", path.to_str().unwrap());
-
   Ok(read_dir(path)?.filter_map(move |entry| {
     if let Ok(entry) = entry {
       let path = entry.path();

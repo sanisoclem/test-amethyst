@@ -1,6 +1,3 @@
-use std::collections::HashMap;
-use std::fs::read_dir;
-
 use crate::{
     components::{critter::CritterPrefabData, level::LevelPrefabData, NamedPrefab},
     utils::assets::enumerate_assets,
@@ -9,9 +6,9 @@ use amethyst::{
     assets::{AssetStorage, Handle, Prefab, PrefabLoader, ProgressCounter, RonFormat},
     ecs::World,
     ui::{UiLoader, UiPrefab},
-    utils::application_root_dir,
 };
 use serde::Deserialize;
+use std::collections::HashMap;
 
 // evoli's UI registry (should we use paths as names instead?)
 #[derive(Default)]
@@ -140,7 +137,6 @@ where
                 .and_then(|entity| entity.data())
                 .and_then(|data| data.name())
                 .expect("Failed to retrieve prefab name");
-            log::info!("Found named prefab {}", name);
             new_prefabs.insert(name.to_owned(), handle.clone());
         }
         new_prefabs

@@ -1,0 +1,10 @@
+(
+    axes: {
+        ZAxis: Emulated(pos: Key(S), neg: Key(W)),
+        YAxis: Emulated(pos: Key(Space), neg: Key(C)),
+        XAxis: Emulated(pos: Key(D), neg: Key(A)),
+    },
+    actions: {
+        Interact: [[Key(F)]]
+    },
+)

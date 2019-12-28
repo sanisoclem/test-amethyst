@@ -1,14 +1,5 @@
-use crate::{
-  resources::prefabs::{PrefabRegistry, UiPrefabRegistry},
-  utils::hierarchy_util,
-};
-use amethyst::{
-  assets::{PrefabLoader, PrefabLoaderSystem, Processor, ProgressCounter, RonFormat},
-  audio::{output::init_output, Source},
-  ecs::Entity,
-  prelude::*,
-  ui::{RenderUi, UiBundle, UiCreator, UiEvent, UiFinder, UiText},
-};
+use crate::{resources::prefabs::UiPrefabRegistry, utils::hierarchy_util};
+use amethyst::{ecs::Entity, prelude::*};
 
 pub struct MenuState {
   scene_root: Option<Entity>,

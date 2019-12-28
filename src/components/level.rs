@@ -1,5 +1,6 @@
 use amethyst::{
     assets::{PrefabData, ProgressCounter},
+    controls::ControlTagPrefab,
     core::{Named, Transform},
     derive::PrefabData,
     ecs::Entity,
@@ -8,6 +9,7 @@ use amethyst::{
         camera::CameraPrefab, formats::GraphicsPrefab, light::LightPrefab,
         rendy::mesh::MeshBuilder, shape::FromShape,
     },
+    utils::removal::Removal,
     Error,
 };
 use serde::{Deserialize, Serialize};
@@ -24,6 +26,8 @@ where
     transform: Option<Transform>,
     light: Option<LightPrefab>,
     camera: Option<CameraPrefab>,
+    control_tag: Option<ControlTagPrefab>,
+    removal: Option<Removal<()>>,
 }
 
 impl<T> crate::components::NamedPrefab for LevelPrefabData<T>

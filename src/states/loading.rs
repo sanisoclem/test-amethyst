@@ -1,6 +1,6 @@
 use crate::{
   resources::prefabs::{initialize_prefabs, update_prefab_names},
-  states::{game::MainGameState, menu::MenuState},
+  states::{game::MainGameState},
   utils::hierarchy_util,
 };
 use amethyst::{
