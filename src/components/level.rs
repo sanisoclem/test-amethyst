@@ -9,7 +9,7 @@ use amethyst::{
         camera::CameraPrefab, formats::GraphicsPrefab, light::LightPrefab,
         rendy::mesh::MeshBuilder, shape::FromShape,
     },
-    utils::removal::Removal,
+    utils::{auto_fov::AutoFov, removal::Removal},
     Error,
 };
 use serde::{Deserialize, Serialize};
@@ -27,6 +27,7 @@ where
     light: Option<LightPrefab>,
     camera: Option<CameraPrefab>,
     control_tag: Option<ControlTagPrefab>,
+    auto_fov: Option<AutoFov>,
     removal: Option<Removal<()>>,
 }
 

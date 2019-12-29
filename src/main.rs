@@ -2,7 +2,7 @@ use amethyst::{
     assets::{PrefabLoaderSystemDesc, Processor},
     audio::Source,
     controls::FlyControlBundle,
-    core::{transform::TransformBundle},
+    core::transform::TransformBundle,
     input::InputBundle,
     prelude::*,
     renderer::{
@@ -11,7 +11,11 @@ use amethyst::{
         RenderingBundle,
     },
     ui::{RenderUi, UiBundle},
-    utils::{application_root_dir, fps_counter::FpsCounterBundle},
+    utils::{
+        application_root_dir,
+        auto_fov::{ AutoFovSystem},
+        fps_counter::FpsCounterBundle,
+    },
 };
 use components::{critter::CritterPrefabData, level::LevelPrefabData};
 
@@ -50,8 +54,9 @@ fn main() -> amethyst::Result<()> {
                 Some(bindings::AxisBinding::ZAxis),
             )
             .with_sensitivity(0.1, 0.1)
-            .with_speed(5.),
+            .with_speed(20.),
         )?
+        .with(AutoFovSystem::new(), "auto_fov", &[])
         .with_bundle(TransformBundle::new().with_dep(&["fly_movement", "free_rotation"]))?
         .with_bundle(UiBundle::<bindings::GameBindings>::new())?
         .with(Processor::<Source>::new(), "source_processor", &[])
@@ -61,6 +66,16 @@ fn main() -> amethyst::Result<()> {
             &[],
         )
         .with(systems::debug::DebugSystem::default(), "debug_system", &[])
+        .with(
+            systems::terrain::BiomeSystem::default(),
+            "biome_system",
+            &[],
+        )
+        .with(
+            systems::terrain::BiomeMeshBuilderSystem::default(),
+            "biome_mesh_builder_system",
+            &["biome_system"],
+        )
         .with_bundle(FpsCounterBundle::default())?
         .with_bundle(
             InputBundle::<bindings::GameBindings>::new()

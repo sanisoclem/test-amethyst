@@ -4,11 +4,11 @@
 */
 (
   title: "Project Baymax",
-  dimensions: Some((1024, 768)),
-  max_dimensions: None,
-  min_dimensions: Some((1024, 768)),
-  fullscreen: None,
-  multisampling: 32,
+//   dimensions: Some((1024, 768)),
+//   max_dimensions: None,
+//   min_dimensions: Some((1024, 768)),
+  fullscreen: Some(MonitorIdent(0, "default")),
+  multisampling: 8,
   visibility: true,
   vsync: false,
 )
