@@ -10,7 +10,7 @@ Prefab (
         (
             data: (
                name: (
-          name: "default_level"
+          name: "default_level2"
         ),
                 light: (ambient_color: ((0.01, 0.01, 0.01, 1.0))),
             ),
@@ -68,7 +68,7 @@ Prefab (
                 ),
                 transform: (
                     translation: (5.0, -10.0, -5.0),
-                    scale: (30.0, 30.0, 30.0),
+                    scale: (1.0, 1.0, 1.0),
                 ),
             ),
         ),

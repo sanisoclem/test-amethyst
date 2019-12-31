@@ -11,11 +11,7 @@ use amethyst::{
         RenderingBundle,
     },
     ui::{RenderUi, UiBundle},
-    utils::{
-        application_root_dir,
-        auto_fov::{ AutoFovSystem},
-        fps_counter::FpsCounterBundle,
-    },
+    utils::{application_root_dir, auto_fov::AutoFovSystem, fps_counter::FpsCounterBundle},
 };
 use components::{critter::CritterPrefabData, level::LevelPrefabData};
 
@@ -25,8 +21,15 @@ mod resources;
 mod states;
 mod systems;
 mod utils;
+use noise::utils::*;
+use noise::{Blend, Fbm, Perlin, RidgedMulti};
 
 fn main() -> amethyst::Result<()> {
+    let perlin = Perlin::new();
+
+    PlaneMapBuilder::new(&perlin)
+        .build()
+        .write_to_file("blend.png");
     amethyst::start_logger(Default::default());
 
     let app_root = application_root_dir()?;
@@ -66,16 +69,7 @@ fn main() -> amethyst::Result<()> {
             &[],
         )
         .with(systems::debug::DebugSystem::default(), "debug_system", &[])
-        .with(
-            systems::terrain::BiomeSystem::default(),
-            "biome_system",
-            &[],
-        )
-        .with(
-            systems::terrain::BiomeMeshBuilderSystem::default(),
-            "biome_mesh_builder_system",
-            &["biome_system"],
-        )
+        .with_bundle(systems::terrain::TerrainBundle::default())?
         .with_bundle(FpsCounterBundle::default())?
         .with_bundle(
             InputBundle::<bindings::GameBindings>::new()

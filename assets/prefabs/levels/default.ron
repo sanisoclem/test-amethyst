@@ -4,10 +4,21 @@ Prefab (
     (
       data: (
         name: (
-          name: "default_level2"
+          name: "default_level"
         ),
         transform: (),
       ),
+    ),
+    (
+        data: (
+            light: (
+                light: Directional((
+                    direction: [-1.0, -1.0, -1.0],
+                    intensity: 0.5,
+                    color: Srgb(0.2, 0.2, 0.2),
+                )),
+            ),
+        ),
     ),
     // (
     //   data: (

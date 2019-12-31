@@ -65,59 +65,9 @@ impl SimpleState for MainGameState {
         {
             let default_mat = world.read_resource::<MaterialDefaults>().0.clone();
 
-            let mesh = world.exec(|loader: AssetLoaderSystemData<Mesh>| {
-                loader.load_from_data(
-                    MeshData(
-                        MeshBuilder::new()
-                            .with_vertices(vec![
-                                Position([0.0, 0.0, 0.0]),
-                                Position([0.0, 1.0, 0.0]),
-                                Position([1.0, 0.0, 0.0]),
-                                Position([1.0, 1.0, 0.0]),
-                                Position([0.0, 0.0, 1.0]),
-                                Position([0.0, 1.0, 1.0]),
-                                Position([1.0, 0.0, 1.0]),
-                                Position([1.0, 1.0, 1.0]),
-                            ])
-                            .with_vertices(vec![
-                                Normal([0.0, 0.0, 1.0]),
-                                Normal([0.0, 0.0, 1.0]),
-                                Normal([0.0, 0.0, 1.0]),
-                                Normal([0.0, 0.0, 1.0]),
-                                Normal([0.0, 0.0, -1.0]),
-                                Normal([0.0, 0.0, -1.0]),
-                                Normal([0.0, 0.0, -1.0]),
-                                Normal([0.0, 0.0, -1.0]),
-                            ])
-                            .with_vertices(vec![
-                                TexCoord([0.0, 0.0]),
-                                TexCoord([0.0, 1.0]),
-                                TexCoord([1.0, 1.0]),
-                                TexCoord([1.0, 1.0]),
-                                TexCoord([0.0, 0.0]),
-                                TexCoord([0.0, 1.0]),
-                                TexCoord([1.0, 1.0]),
-                                TexCoord([1.0, 1.0]),
-                            ])
-                            .with_indices(Indices::U16(
-                                vec![
-                                    0, 1, 2, // front
-                                    1, 3, 2, 1, 5, 3, // top
-                                    5, 7, 3, 0, 4, 1, // right
-                                    4, 5, 1, 0, 2, 4, // bottom
-                                    2, 6, 4, 3, 7, 2, // left
-                                    7, 6, 2, 6, 5, 4, 5, 6, 7,
-                                ]
-                                .into(),
-                            )),
-                    ),
-                    (),
-                )
-            });
-
             let albedo = world.exec(|loader: AssetLoaderSystemData<Texture>| {
                 loader.load_from_data(
-                    load_from_linear_rgba(LinSrgba::new(1.0, 0.0, 0.0, 1.0)).into(),
+                    load_from_linear_rgba(LinSrgba::new(0.1, 0.9, 0.1, 1.0)).into(),
                     (),
                 )
             });
@@ -135,15 +85,6 @@ impl SimpleState for MainGameState {
                 let mut hax = world.write_resource::<Hax>();
                 hax.the_material = Some(mat.clone());
             }
-
-            let transform = Transform::default();
-
-            world
-                .create_entity()
-                .with(mesh)
-                .with(mat)
-                .with(transform)
-                .build();
         }
     }
 
