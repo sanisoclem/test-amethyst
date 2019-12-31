@@ -65,6 +65,7 @@ impl<'a> System<'a> for ChunkMeshBuilderSystem {
                         mesh_loader.load_from_data(
                             crate::utils::mesh::create_voxel_mesh(
                                 voxel,
+                                settings.chunk_size,
                                 settings.voxel_size,
                                 offset,
                             ),

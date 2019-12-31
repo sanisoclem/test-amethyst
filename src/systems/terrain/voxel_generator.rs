@@ -38,17 +38,13 @@ impl<'a> System<'a> for VoxelGeneratorSystem {
                 .map(|i| {
                     let x = i % settings.chunk_size;
                     let y = i / settings.chunk_size;
-                    let abs_x = chunk.x - offset + x as f32;
-                    let abs_y = chunk.y - offset + y as f32;
+                    let abs_x = chunk.x - offset + (x as f32 * settings.voxel_size);
+                    let abs_y = chunk.y - offset + (y as f32 * settings.voxel_size);
                     let height = self
                         .noise_generator
-                        .get([abs_x as f64 * 100., abs_y as f64 * 100.])
-                        * 100.;
-                    log::info!(
-                        "noise {:?}:{}",
-                        (abs_x as f64, abs_y as f64),
-                        self.noise_generator.get([abs_x as f64, abs_y as f64])
-                    );
+                        .get([abs_x as f64 / 100., abs_y as f64 / 100.])
+                        * 5.;
+
                     Voxel::new(x, y, abs_x, abs_y, height as f32)
                 })
                 .collect::<Vec<_>>();

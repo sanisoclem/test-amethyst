@@ -57,7 +57,7 @@ fn main() -> amethyst::Result<()> {
                 Some(bindings::AxisBinding::ZAxis),
             )
             .with_sensitivity(0.1, 0.1)
-            .with_speed(20.),
+            .with_speed(250.),
         )?
         .with(AutoFovSystem::new(), "auto_fov", &[])
         .with_bundle(TransformBundle::new().with_dep(&["fly_movement", "free_rotation"]))?

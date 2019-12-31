@@ -8,7 +8,13 @@ use amethyst::{
     },
 };
 
-pub fn create_voxel_mesh(voxels: &VoxelData, voxel_size: f32, offset: f32) -> MeshData {
+pub fn create_voxel_mesh(
+    voxels: &VoxelData,
+    chunk_size: i32,
+    voxel_size: f32,
+    offset: f32,
+) -> MeshData {
+    let chunk_size = chunk_size as u16;
     let vertices = voxels
         .voxels
         .iter()
@@ -30,8 +36,21 @@ pub fn create_voxel_mesh(voxels: &VoxelData, voxel_size: f32, offset: f32) -> Me
         .iter()
         .enumerate()
         .flat_map(|(index, _)| {
-            let i = index as u16 * 4;
-            vec![
+            let index = index as u16;
+
+            let i = index * 4;
+            let i_right = if ((index + 1) % chunk_size) == 0 {
+                None
+            } else {
+                Some((index + 1) * 4)
+            };
+            let i_down = if (index + chunk_size) / chunk_size >= chunk_size {
+                None
+            } else {
+                Some((index + chunk_size) * 4)
+            };
+
+            let mut t = vec![
                 // -- how can I replace this with a slice??? I only want to create 1 vector after the collect
                 i + 0,
                 i + 2,
@@ -39,7 +58,17 @@ pub fn create_voxel_mesh(voxels: &VoxelData, voxel_size: f32, offset: f32) -> Me
                 i + 1,
                 i + 2,
                 i + 3,
-            ]
+            ];
+
+            if let Some(right) = i_right {
+                t.extend(&[i + 1, i + 3, right, right, i + 3, right + 2]);
+            }
+
+            if let Some(down) = i_down {
+                t.extend(&[i + 3, i + 2, down, down, down + 1, i + 3]);
+            }
+
+            t
         })
         .collect::<Vec<_>>();
 
