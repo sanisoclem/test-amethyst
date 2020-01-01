@@ -31,27 +31,48 @@ impl<'a> System<'a> for VoxelGeneratorSystem {
             .map(|(entity, chunk, _)| (entity, chunk))
             .collect::<Vec<_>>();
 
-        let offset = (settings.chunk_size as f32 * settings.voxel_size) / 2.;
-
+        // TODO: optimize (duplicate calcs)
         for (entity, chunk) in entities_to_modify {
             let voxels = (0..(settings.chunk_size * settings.chunk_size))
                 .map(|i| {
                     let x = i % settings.chunk_size;
                     let y = i / settings.chunk_size;
-                    let abs_x = chunk.x - offset + (x as f32 * settings.voxel_size);
-                    let abs_y = chunk.y - offset + (y as f32 * settings.voxel_size);
-                    let height = self
-                        .noise_generator
-                        .get([abs_x as f64 / 100., abs_y as f64 / 100.])
-                        * 5.;
+                    let (abs_x, abs_y) = get_abs((x, y), chunk, &settings);
+                    let heights = [
+                        (x, y),
+                        (x + 1, y),
+                        (x - 1, y),
+                        (x, y + 1),
+                        (x, y - 1),
+                        (x + 1, y + 1),
+                        (x - 1, y - 1),
+                        (x + 1, y - 1),
+                        (x - 1, y + 1),
+                    ]
+                    .iter()
+                    .map(|&xy| get_abs(xy, chunk, &settings))
+                    .map(|(abs_x, abs_y)| self.get_height(abs_x, abs_y))
+                    .collect();
 
-                    Voxel::new(x, y, abs_x, abs_y, height as f32)
+                    Voxel::new(x, y, abs_x, abs_y, heights)
                 })
                 .collect::<Vec<_>>();
 
-            // log::info!("generated voxel data for chunk {:?} : {:?}", chunk, voxels);
-
             voxel_data.insert(entity, VoxelData::new(voxels)).unwrap();
         }
+    }
+}
+
+fn get_abs((x, y): (i32, i32), chunk: &Chunk, settings: &super::TerrainSettings) -> (f32, f32) {
+    let offset = (settings.chunk_size as f32 * settings.voxel_size) / 2.;
+    (
+        chunk.x - offset + (x as f32 * settings.voxel_size),
+        chunk.y - offset + (y as f32 * settings.voxel_size),
+    )
+}
+
+impl VoxelGeneratorSystem {
+    fn get_height(&self, x: f32, y: f32) -> f32 {
+        (self.noise_generator.get([x as f64 / 100., y as f64 / 100.]) * 30.) as f32
     }
 }

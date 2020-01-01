@@ -63,11 +63,12 @@ impl<'a> System<'a> for ChunkMeshBuilderSystem {
                     .insert(
                         entity,
                         mesh_loader.load_from_data(
-                            crate::utils::mesh::create_voxel_mesh(
+                            crate::utils::mesh::create_voxel_mesh2(
                                 voxel,
                                 settings.chunk_size,
                                 settings.voxel_size,
                                 offset,
+                                chunk,
                             ),
                             (),
                         ),
