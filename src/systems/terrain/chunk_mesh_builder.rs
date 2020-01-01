@@ -52,7 +52,7 @@ impl<'a> System<'a> for ChunkMeshBuilderSystem {
 
             for (entity, chunk, voxel) in to_create.into_iter() {
                 log::info!("Creating mesh for {:?}", chunk);
-                let origin = Vector3::new(chunk.x, 0., chunk.y);
+                let origin = Vector3::new(chunk.x, -50., chunk.y);
 
                 transforms
                     .insert(entity, Transform::from(origin))

@@ -19,33 +19,39 @@ impl Chunk {
 pub struct Voxel {
     pub x: i32,
     pub y: i32,
+    pub z: i32,
     pub abs_x: f32,
     pub abs_y: f32,
-    pub heights: Vec<f32>, // [f32; 9],
+    pub abs_z: f32,
 }
 
 #[derive(Debug)]
 pub struct VoxelData {
     pub voxels: Vec<Voxel>, // when const generics is stable, probably can be `voxels: [T; N]` (need more than 32 voxels maybe)
+    pub adjacent_voxels: Vec<Voxel>,
 }
 
 impl Component for VoxelData {
     type Storage = DenseVecStorage<Self>;
 }
 impl Voxel {
-    pub fn new(x: i32, y: i32, abs_x: f32, abs_y: f32, heights: Vec<f32>) -> Self {
+    pub fn new(x: i32, y: i32, z: i32, abs_x: f32, abs_y: f32, abs_z: f32) -> Self {
         Self {
             x: x,
             y: y,
+            z: z,
             abs_x: abs_x,
             abs_y: abs_y,
-            heights: heights,
+            abs_z: abs_z,
         }
     }
 }
 
 impl VoxelData {
-    pub fn new(data: Vec<Voxel>) -> Self {
-        Self { voxels: data }
+    pub fn new(data: Vec<Voxel>, adjacent_voxels: Vec<Voxel>) -> Self {
+        Self {
+            voxels: data,
+            adjacent_voxels: adjacent_voxels,
+        }
     }
 }
