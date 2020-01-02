@@ -81,7 +81,7 @@ impl<'a> System<'a> for ChunkMeshBuilderSystem {
                 bounds
                     .insert(
                         entity,
-                        BoundingSphere::origin(((chunk_size * chunk_size) * 2.).sqrt() / 2.),
+                        BoundingSphere::origin(((chunk_size * chunk_size) * 2.).sqrt()), // 2.),
                     )
                     .expect("bounding sphere insert failed");
             }

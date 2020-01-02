@@ -32,30 +32,33 @@ impl<'a> System<'a> for VoxelGeneratorSystem {
             .collect::<Vec<_>>();
 
         for (entity, chunk) in entities_to_modify {
-            let mut adjacent_voxels = Vec::new();
-            let mut voxels = Vec::new();
-            for x in -2..(settings.chunk_size + 1) {
-                for z in -2..(settings.chunk_size + 1) {
+            let mut voxels = std::collections::HashMap::new();
+            for x in 0..(settings.chunk_size + 1) {
+                for z in 0..(settings.chunk_size + 1) {
                     let (abs_x, abs_z) = get_abs((x, z), chunk, &settings);
                     let height = self.get_height(abs_x, abs_z);
+                    let height = if height <= 0 { 1 } else { height };
                     // todo: get height for adjacent voxels from adjacent chunks if exists (in case they have been modified)
 
-                    let vector_to_push_to =
-                        if z < 0 || z >= settings.chunk_size || x < 0 || x >= settings.chunk_size {
-                            &mut adjacent_voxels
-                        } else {
-                            &mut voxels
-                        };
-
-                    for y in 0..height {
+                    for y in 0..11 {
                         let abs_y = y as f32 * settings.voxel_size;
-                        vector_to_push_to.push(Voxel::new(x, y, z, abs_x, abs_y, abs_z))
+                        let value = self.noise_generator.get([
+                            abs_x as f64 / 100.,
+                            abs_y as f64 / 100.,
+                            abs_z as f64 / 100.,
+                        ]);
+                        voxels.insert(
+                            (x, y, z),
+                            Voxel {
+                                value: if value >= 0.5 { 1 } else { 0 },
+                            },
+                        );
                     }
                 }
             }
 
             voxel_data
-                .insert(entity, VoxelData::new(voxels, adjacent_voxels))
+                .insert(entity, VoxelData { voxels: voxels })
                 .unwrap();
         }
     }
@@ -71,6 +74,6 @@ fn get_abs((x, y): (i32, i32), chunk: &Chunk, settings: &super::TerrainSettings)
 
 impl VoxelGeneratorSystem {
     fn get_height(&self, x: f32, y: f32) -> i32 {
-        (self.noise_generator.get([x as f64 / 100., y as f64 / 100.]) * 100.).floor() as i32
+        (self.noise_generator.get([x as f64 / 100., y as f64 / 100.]) * 10.).floor() as i32
     }
 }

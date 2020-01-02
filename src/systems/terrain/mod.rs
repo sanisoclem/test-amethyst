@@ -21,7 +21,7 @@ pub struct TerrainSettings {
 impl Default for TerrainSettings {
     fn default() -> Self {
         Self {
-            chunk_size: 50,
+            chunk_size: 20,
             voxel_size: 30.,
         }
     }

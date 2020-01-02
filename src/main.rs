@@ -21,15 +21,8 @@ mod resources;
 mod states;
 mod systems;
 mod utils;
-use noise::utils::*;
-use noise::{Blend, Fbm, Perlin, RidgedMulti};
 
 fn main() -> amethyst::Result<()> {
-    let perlin = Perlin::new();
-
-    PlaneMapBuilder::new(&perlin)
-        .build()
-        .write_to_file("blend.png");
     amethyst::start_logger(Default::default());
 
     let app_root = application_root_dir()?;

@@ -1,42 +1,19 @@
 {
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "type": "lldb",
-      "request": "launch",
-      "name": "Debug executable 'test-amethyst'",
-      "cargo": {
-        "args": [
-          "build",
-          "--bin=test-amethyst",
-          "--package=test-amethyst"
-        ],
-        "filter": {
-          "name": "test-amethyst",
-          "kind": "bin"
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(Windows) Launch",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/target/debug/test-amethyst.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false
         }
-      },
-      "args": [],
-      "cwd": "${workspaceFolder}"
-    },
-    {
-      "type": "lldb",
-      "request": "launch",
-      "name": "Debug unit tests in executable 'test-amethyst'",
-      "cargo": {
-        "args": [
-          "test",
-          "--no-run",
-          "--bin=test-amethyst",
-          "--package=test-amethyst"
-        ],
-        "filter": {
-          "name": "test-amethyst",
-          "kind": "bin"
-        }
-      },
-      "args": [],
-      "cwd": "${workspaceFolder}"
-    }
-  ]
+    ]
 }
