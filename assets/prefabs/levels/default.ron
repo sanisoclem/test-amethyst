@@ -14,22 +14,23 @@ Prefab (
             light: (
                 light: Directional((
                     direction: [-1.0, -1.0, -1.0],
-                    intensity: 0.5,
-                    color: Srgb(0.2, 0.2, 0.2),
+                    intensity: 1.0,
+                    color: Srgb(1.0, 1.0, 1.0),
                 )),
             ),
         ),
     ),
     // (
-    //   data: (
-    //     graphics: (
-    //       mesh: Shape((shape: Torus(1, 0.5 ,10,30))),
-    //       material: (
-    //         albedo: Generate(Srgba(0.2, 0.2, 1.0, 1.0)),
-    //       ),
+    //     data: (
+    //         light: (
+    //             light: Sun((
+    //                 ang_rad: 1.,
+    //                 color: Srgb(0.8,0.8,0.6),
+    //                 direction: [0.0, -1.0, 0.0],
+    //                 intensity: 10000.,
+    //             )),
+    //         ),
     //     ),
-    //     transform: (),
-    //   ),
     // ),
     (
       data: (
@@ -42,7 +43,7 @@ Prefab (
             light: Point((
                 intensity: 5.0,
                 color: (1.0, 1.0, 1.0),
-                radius: 10.0,
+                radius: 100.0,
             )),
         ),
       ),

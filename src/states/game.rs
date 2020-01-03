@@ -35,12 +35,16 @@ impl Default for MainGameState {
     }
 }
 pub struct Hax {
-    pub the_material: Option<Handle<Material>>,
+    pub the_material: Option<Material>,
+    pub blah: Option<Handle<Material>>,
 }
 
 impl Default for Hax {
     fn default() -> Self {
-        Self { the_material: None }
+        Self {
+            the_material: None,
+            blah: None,
+        }
     }
 }
 
@@ -83,7 +87,8 @@ impl SimpleState for MainGameState {
             });
             {
                 let mut hax = world.write_resource::<Hax>();
-                hax.the_material = Some(mat.clone());
+                hax.the_material = Some(default_mat);
+                hax.blah = Some(mat);
             }
         }
     }

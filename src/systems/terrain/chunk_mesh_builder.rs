@@ -6,7 +6,10 @@ use amethyst::{
     core::{SystemDesc, Transform},
     derive::SystemDesc,
     ecs::prelude::*,
-    renderer::{types::Mesh, visibility::BoundingSphere, Material},
+    renderer::{
+        palette::LinSrgba, rendy::texture::palette::load_from_linear_rgba, types::Mesh,
+        visibility::BoundingSphere, Material, Texture,
+    },
 };
 
 // generates meshes for chunks
@@ -20,6 +23,8 @@ impl<'a> System<'a> for ChunkMeshBuilderSystem {
         ReadStorage<'a, Chunk>,
         ReadStorage<'a, VoxelData>, // convert to read id
         AssetLoaderSystemData<'a, Mesh>,
+        AssetLoaderSystemData<'a, Texture>,
+        AssetLoaderSystemData<'a, Material>,
         WriteStorage<'a, Handle<Mesh>>,
         WriteStorage<'a, Handle<Material>>,
         WriteStorage<'a, Transform>,
@@ -34,6 +39,8 @@ impl<'a> System<'a> for ChunkMeshBuilderSystem {
             chunks,
             voxel_data,
             mesh_loader,
+            tex_loader,
+            mat_loader,
             mut meshes,
             mut materials,
             mut transforms,
@@ -41,7 +48,7 @@ impl<'a> System<'a> for ChunkMeshBuilderSystem {
             hax,
         ) = data;
 
-        if let Some(material) = hax.the_material.as_ref() {
+        if let Some(material) = hax.blah.as_ref() {
             let to_create = (&*entities, &chunks, &voxel_data, !&transforms)
                 .join()
                 .map(|(entity, chunk, voxel, _)| (entity, chunk, voxel))
@@ -74,6 +81,26 @@ impl<'a> System<'a> for ChunkMeshBuilderSystem {
                         ),
                     )
                     .expect("mesh insert failed");
+
+                // let albedo = tex_loader.load_from_data(
+                //     load_from_linear_rgba(LinSrgba::new(
+                //         0.2 + origin.x / 10000.,
+                //         (origin.x + origin.z) / 20000.,
+                //         (origin.z) / 10000.,
+                //         1.0,
+                //     ))
+                //     .into(),
+                //     (),
+                // );
+
+                // let mat = mat_loader.load_from_data(
+                //     Material {
+                //         albedo,
+                //         ..material.clone()
+                //     },
+                //     (),
+                // );
+
                 materials
                     .insert(entity, material.clone())
                     .expect("material insertion failed");
