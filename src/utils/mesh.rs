@@ -358,7 +358,7 @@ pub fn create_voxel_mesh2(
             }
         }
     }
-    let indices = (0..vertices.len() as u16).collect::<Vec<u16>>();
+    let indices = (0..vertices.len() as u32).collect::<Vec<u32>>();
     let normals = calculate_normals(&vertices, &indices);
     let tex_coords = (0..vertices.len())
         .map(|_| TexCoord([0.0, 0.0]))
@@ -369,11 +369,11 @@ pub fn create_voxel_mesh2(
             .with_vertices(vertices)
             .with_vertices(normals)
             .with_vertices(tex_coords)
-            .with_indices(Indices::U16(indices.into())),
+            .with_indices(Indices::U32(indices.into())),
     )
 }
 
-pub fn calculate_normals(vertices: &[Position], indices: &[u16]) -> Vec<Normal> {
+pub fn calculate_normals(vertices: &[Position], indices: &[u32]) -> Vec<Normal> {
     let mut normals = vec![zero::<Vector3<f32>>(); vertices.len()];
     let num_faces = indices.len() / 3;
     {

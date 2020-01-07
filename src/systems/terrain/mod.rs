@@ -22,7 +22,7 @@ impl Default for TerrainSettings {
     fn default() -> Self {
         Self {
             chunk_size: 50,
-            voxel_size: 5.,
+            voxel_size: 40.,
         }
     }
 }

@@ -53,7 +53,7 @@ impl<'a> System<'a> for VoxelGeneratorSystem {
             for x in 0..(settings.chunk_size + 1) {
                 for z in 0..(settings.chunk_size + 1) {
                     let (abs_x, abs_z) = get_abs((x, z), chunk, &settings);
-                    let value = (generator.get([abs_x as f64 / 100., abs_z as f64 / 100.]) * 50.)
+                    let value = (generator.get([abs_x as f64 / 3000., abs_z as f64 / 3000.]) * 20.)
                         .floor() as i32;
 
                     for y in 0..51 {

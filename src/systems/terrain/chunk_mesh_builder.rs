@@ -11,6 +11,7 @@ use amethyst::{
         visibility::BoundingSphere, Material, Texture,
     },
 };
+use rand::prelude::*;
 
 // generates meshes for chunks
 #[derive(Default)]
@@ -48,7 +49,7 @@ impl<'a> System<'a> for ChunkMeshBuilderSystem {
             hax,
         ) = data;
 
-        if let Some(material) = hax.blah.as_ref() {
+        if let Some(material) = hax.the_material.as_ref() {
             let to_create = (&*entities, &chunks, &voxel_data, !&transforms)
                 .join()
                 .map(|(entity, chunk, voxel, _)| (entity, chunk, voxel))
@@ -81,28 +82,28 @@ impl<'a> System<'a> for ChunkMeshBuilderSystem {
                         ),
                     )
                     .expect("mesh insert failed");
+                let mut rng = thread_rng();
+                let albedo = tex_loader.load_from_data(
+                    load_from_linear_rgba(LinSrgba::new(
+                        rng.gen_range(0.1, 0.99),
+                        rng.gen_range(0.1, 0.99),
+                        rng.gen_range(0.1, 0.99),
+                        1.0,
+                    ))
+                    .into(),
+                    (),
+                );
 
-                // let albedo = tex_loader.load_from_data(
-                //     load_from_linear_rgba(LinSrgba::new(
-                //         0.2 + origin.x / 10000.,
-                //         (origin.x + origin.z) / 20000.,
-                //         (origin.z) / 10000.,
-                //         1.0,
-                //     ))
-                //     .into(),
-                //     (),
-                // );
-
-                // let mat = mat_loader.load_from_data(
-                //     Material {
-                //         albedo,
-                //         ..material.clone()
-                //     },
-                //     (),
-                // );
+                let mat = mat_loader.load_from_data(
+                    Material {
+                        albedo,
+                        ..material.clone()
+                    },
+                    (),
+                );
 
                 materials
-                    .insert(entity, material.clone())
+                    .insert(entity, mat)
                     .expect("material insertion failed");
 
                 bounds
